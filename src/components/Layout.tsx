@@ -37,8 +37,8 @@ const ThemeSwitcher: React.FC = () => {
     const { colorTheme, setTheme } = useTheme();
     const themes = [
         { id: 'neon-void', color: '#7b5af5' },
-        { id: 'frost', color: '#90caf9' },
-        { id: 'cosmic', color: '#e0b84f' },
+        { id: 'frost', color: '#0091ea' },
+        { id: 'cosmic', color: '#ffab00' },
         { id: 'ember', color: '#ff7043' }
     ];
 
@@ -135,7 +135,7 @@ const Layout: React.FC = () => {
               className="w-10 h-10 object-contain rounded-[10px] shadow-lg transition-transform hover:scale-110" 
               alt="NexInk Logo" 
             />
-            <span className="text-xl font-light tracking-[0.06em] uppercase text-white">NexInk Ltd</span>
+            <span className="text-xl font-light tracking-[0.06em] uppercase text-text">NexInk Ltd</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -149,7 +149,7 @@ const Layout: React.FC = () => {
               <a 
                 key={link.path}
                 href={link.path} 
-                className="relative text-[11px] mono-accent text-white/70 hover:text-white transition-colors group px-1"
+                className="relative text-[11px] mono-accent text-text/70 hover:text-text transition-colors group px-1"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-1/2 w-0 h-[1.5px] bg-gradient-to-r from-[var(--accent-1)] to-[var(--accent-3)] -translate-x-1/2 scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
@@ -158,7 +158,7 @@ const Layout: React.FC = () => {
           </div>
 
           <div className="hidden md:block">
-             <a href="#contact" className="glow-border px-8 py-3 text-[11px] mono-accent text-white uppercase">
+             <a href="#contact" className="glow-border px-8 py-3 text-[11px] mono-accent text-text uppercase">
                Get Quote
              </a>
           </div>
@@ -206,7 +206,7 @@ const Layout: React.FC = () => {
                   className="w-12 h-12 object-contain" 
                   alt="NexInk" 
                 />
-                <span className="text-2xl font-light tracking-widest uppercase text-white">NexInk Ltd</span>
+                <span className="text-2xl font-light tracking-widest uppercase text-text">NexInk Ltd</span>
               </div>
               <p className="text-[15px] leading-relaxed text-text-secondary">
                 Redefining the standard of digital aesthetics through systematic glassmorphism and data-driven intelligence.

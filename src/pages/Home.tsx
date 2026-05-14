@@ -358,7 +358,7 @@ const Home: React.FC = () => {
             <div className="p-12 md:p-24 space-y-16">
               <div className="space-y-6">
                 <h4 className="text-[10px] mono-accent text-primary uppercase tracking-[0.4em]">The Framework</h4>
-                <h2 className="text-5xl md:text-7xl font-light uppercase tracking-tighter leading-none text-white">ROI-Driven <br /><span className="text-gradient">Framework.</span></h2>
+                <h2 className="text-5xl md:text-7xl font-light uppercase tracking-tighter leading-none text-text">ROI-Driven <br /><span className="text-gradient">Framework.</span></h2>
                 <p className="text-text-secondary font-light text-lg">Every strategy is built on this proven 4-part conversion engine that guarantees measurable results.</p>
               </div>
 
@@ -459,7 +459,7 @@ const Home: React.FC = () => {
           <div className="flex-1 space-y-12">
             <div className="space-y-6 text-center lg:text-left">
                <h4 className="text-[10px] mono-accent text-primary uppercase tracking-[0.4em]">The Architect</h4>
-               <h2 className="text-6xl md:text-8xl font-light uppercase tracking-tighter text-white">Jackson <br /><span className="text-gradient">Mwaniki.</span></h2>
+               <h2 className="text-6xl md:text-8xl font-light uppercase tracking-tighter text-text">Jackson <br /><span className="text-gradient">Mwaniki.</span></h2>
             </div>
             <div className="space-y-8 text-text-secondary font-light text-lg leading-relaxed text-center lg:text-left">
               <p>I don't do "likes and follows." I build conversion engines that drive revenue.</p>
