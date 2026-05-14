@@ -15,6 +15,7 @@ import {
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
 import { useMagnetic } from '../hooks/useMagnetic';
+import { IMAGES } from '../constants';
 
 const Particle: React.FC<{ x: number; y: number; color: string }> = ({ x, y, color }) => {
   return (
@@ -72,7 +73,7 @@ const Layout: React.FC = () => {
       }
     };
 
-    const colors = ['#4fc3f7', '#7b5af5', '#c084fc', '#f472d0'];
+    const colors = ['var(--accent-1)', 'var(--accent-2)', 'var(--accent-3)'];
 
     const handleClick = (e: MouseEvent) => {
       const newParticles = Array.from({ length: 8 }).map((_, i) => ({
@@ -107,14 +108,14 @@ const Layout: React.FC = () => {
       <div 
         ref={spotlightRef}
         className="fixed pointer-events-none z-[9999] w-[500px] h-[500px] rounded-full -translate-x-1/2 -translate-y-1/2"
-        style={{ background: 'radial-gradient(circle, rgba(123,90,245,0.13) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, var(--accent-2) 0%, transparent 70%)', opacity: 0.13 }}
       />
 
       {/* Ambient Animated Blobs */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="ambient-blob w-[600px] h-[600px] bg-[#4fc3f7] opacity-[0.06] blur-[120px] top-[-100px] left-[-100px]" />
-          <div className="ambient-blob w-[500px] h-[500px] bg-[#7b5af5] opacity-[0.06] blur-[100px] top-[30%] right-[-100px]" style={{ animationDelay: '-2s' }} />
-          <div className="ambient-blob w-[550px] h-[550px] bg-[#f472d0] opacity-[0.05] blur-[110px] bottom-[-100px] left-[10%]" style={{ animationDelay: '-4s' }} />
+          <div className="ambient-blob w-[600px] h-[600px] bg-[var(--accent-1)] opacity-[0.06] blur-[120px] top-[-100px] left-[-100px]" />
+          <div className="ambient-blob w-[500px] h-[500px] bg-[var(--accent-2)] opacity-[0.06] blur-[100px] top-[30%] right-[-100px]" style={{ animationDelay: '-2s' }} />
+          <div className="ambient-blob w-[550px] h-[550px] bg-[var(--accent-3)] opacity-[0.05] blur-[110px] bottom-[-100px] left-[10%]" style={{ animationDelay: '-4s' }} />
       </div>
 
       {/* Particles */}
@@ -131,9 +132,11 @@ const Layout: React.FC = () => {
             ref={logoMagnetic.ref}
             className="flex items-center gap-3 group"
           >
-            <div className="w-10 h-10 bg-primary text-white rounded-[10px] flex items-center justify-center font-black text-xl shadow-lg transition-transform">
-              N
-            </div>
+            <img 
+              src={IMAGES.LOGO} 
+              className="w-10 h-10 object-contain rounded-[10px] shadow-lg transition-transform hover:scale-110" 
+              alt="NexInk Logo" 
+            />
             <span className="text-xl font-light tracking-[0.06em] uppercase text-white">NexInk</span>
           </Link>
 
@@ -150,7 +153,7 @@ const Layout: React.FC = () => {
                 className="relative text-[11px] mono-accent text-white/70 hover:text-white transition-colors group px-1"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-1/2 w-0 h-[1.5px] bg-gradient-to-r from-[#4fc3f7] to-[#f472d0] -translate-x-1/2 scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
+                <span className="absolute -bottom-1 left-1/2 w-0 h-[1.5px] bg-gradient-to-r from-[var(--accent-1)] to-[var(--accent-3)] -translate-x-1/2 scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
               </Link>
             ))}
           </div>
@@ -199,7 +202,11 @@ const Layout: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
             <div className="space-y-8">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center font-black text-2xl">N</div>
+                <img 
+                  src={IMAGES.LOGO} 
+                  className="w-12 h-12 object-contain" 
+                  alt="NexInk" 
+                />
                 <span className="text-2xl font-light tracking-widest uppercase text-white">NexInk</span>
               </div>
               <p className="text-[15px] leading-relaxed text-text-secondary">

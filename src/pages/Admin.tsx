@@ -120,7 +120,7 @@ const Admin: React.FC = () => {
   if (authLoading || (loading && posts.length === 0)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-[var(--accent-1)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -132,9 +132,14 @@ const Admin: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1 glass border-white/10 text-primary text-[10px] mono-accent"
+            className="flex items-center gap-4"
           >
-            <ShieldCheck className="w-4 h-4" /> Root Terminal
+            <div className="w-12 h-12 glass p-2 flex items-center justify-center border-white/10">
+              <img src={IMAGES.LOGO} className="w-full h-full object-contain" alt="" />
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-1 glass border-white/10 text-primary text-[10px] mono-accent">
+              <ShieldCheck className="w-4 h-4" /> Root Terminal
+            </div>
           </motion.div>
           <h1 className="text-7xl md:text-[8rem] font-light uppercase leading-[0.8] tracking-[0.06em]">
              Strategic <span className="text-gradient">Hub.</span>
@@ -153,7 +158,8 @@ const Admin: React.FC = () => {
             <Plus className="w-5 h-5 inline-block mr-2" /> Launch Protocol
           </MagneticButton>
           <button 
-            onClick={handleSignOut}
+            type="button"
+            onClick={(e) => { e.preventDefault(); handleSignOut(); }}
             className="px-8 py-5 glass text-text text-[11px] mono-accent uppercase hover:bg-white/5 transition-colors"
           >
             Abort
@@ -197,6 +203,7 @@ const Admin: React.FC = () => {
                </div>
                <div className="flex gap-4 w-full md:w-auto">
                   <button 
+                    type="button"
                     onClick={() => {
                       setEditingPost(post);
                       setIsEditorOpen(true);
@@ -206,7 +213,8 @@ const Admin: React.FC = () => {
                     <Edit3 className="w-5 h-5 mx-auto" />
                   </button>
                   <button 
-                    onClick={() => post.id && handleDelete(post.id)}
+                    type="button"
+                    onClick={() => post.id && handleDelete(post.id).catch(console.error)}
                     className="flex-1 md:flex-none p-5 glass hover:bg-pink/20 transition-all border-none"
                   >
                     <Trash2 className="w-5 h-5 mx-auto" />
@@ -241,7 +249,7 @@ const Admin: React.FC = () => {
             >
               <div className="p-8 border-b border-black/5 dark:border-white/5 flex justify-between items-center">
                 <h2 className="text-3xl font-display uppercase tracking-tighter">{editingPost?.id ? 'Refine Protocol' : 'Initial Dispatch'}</h2>
-                <button onClick={() => setIsEditorOpen(false)} className="p-3 hover:bg-black/5 rounded-full transition-colors">
+                <button type="button" onClick={() => setIsEditorOpen(false)} className="p-3 hover:bg-black/5 rounded-full transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -317,13 +325,15 @@ const Admin: React.FC = () => {
 
               <div className="p-8 border-t border-black/5 dark:border-white/5 flex justify-end gap-6">
                 <button 
+                  type="button"
                   onClick={() => setIsEditorOpen(false)}
                   className="px-8 font-black uppercase tracking-widest text-[10px] opacity-40 hover:opacity-100 transition-opacity"
                 >
                   Discard Package
                 </button>
                 <button 
-                  onClick={handleSave}
+                  type="button"
+                  onClick={() => handleSave().catch(console.error)}
                   disabled={uploading || !editingPost?.title || !editingPost?.content}
                   className="px-10 py-5 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-3 hover:scale-105 transition-all shadow-3xl shadow-primary/40 disabled:opacity-50"
                 >

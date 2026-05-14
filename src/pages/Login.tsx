@@ -6,6 +6,7 @@ import { LogIn, Rocket, Shield } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { MagneticButton } from '../components/UI';
+import { IMAGES } from '../constants';
 
 const Login: React.FC = () => {
   const { user, loading } = useAuth();
@@ -48,8 +49,8 @@ const Login: React.FC = () => {
         className="max-w-xl w-full glass p-12 md:p-24 text-center space-y-16 border-white/5 relative z-10"
       >
         <div className="space-y-10">
-          <div className="w-20 h-20 glass border-white/20 text-primary flex items-center justify-center mx-auto rotate-6 group">
-            <Shield className="w-10 h-10 group-hover:rotate-12 transition-all" />
+          <div className="w-24 h-24 glass border-white/20 flex items-center justify-center mx-auto rotate-6 group overflow-hidden">
+            <img src={IMAGES.LOGO} className="w-16 h-16 object-contain group-hover:scale-110 group-hover:-rotate-6 transition-all" alt="NexInk" />
           </div>
           <div className="space-y-6">
             <h1 className="text-5xl md:text-6xl font-light uppercase tracking-widest leading-tight">Identity<br />Protocol</h1>
@@ -58,7 +59,7 @@ const Login: React.FC = () => {
         </div>
 
         <MagneticButton 
-          onClick={handleLogin}
+          onClick={() => handleLogin().catch(console.error)}
           className="w-full flex items-center justify-center gap-6"
         >
           <div className="bg-white/5 p-2 rounded-lg group-hover:bg-primary/10 transition-colors">

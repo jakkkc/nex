@@ -63,7 +63,7 @@ export const TiltCard: React.FC<{ children: React.ReactNode; className?: string 
 export const MagneticButton: React.FC<{ 
     children: React.ReactNode; 
     className?: string; 
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     type?: "button" | "submit" | "reset";
 }> = ({ children, className = "", onClick, type = "button" }) => {
     const ref = useMagnetic(0.35);
@@ -72,7 +72,7 @@ export const MagneticButton: React.FC<{
             ref={ref}
             type={type}
             onClick={onClick}
-            className={`glow-border px-8 py-4 text-[11px] mono-accent group ${className}`}
+            className={`glow-border px-8 py-4 text-[11px] mono-accent group active:scale-95 transition-transform ${className}`}
         >
             {children}
         </button>

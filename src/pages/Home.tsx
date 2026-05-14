@@ -181,7 +181,7 @@ const Home: React.FC = () => {
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 alt="Showcase" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/20 to-transparent p-12 md:p-24 flex flex-col justify-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/20 to-transparent p-12 md:p-24 flex flex-col justify-end">
                 <div className="space-y-6 max-w-3xl">
                     <div className="inline-block px-3 py-1 glass border-white/20 text-[10px] mono-accent">Operational Report 240</div>
                     <h3 className="text-5xl md:text-8xl font-light uppercase tracking-widest text-white leading-none">Hunters Paradise Revenue</h3>
@@ -233,8 +233,8 @@ const Home: React.FC = () => {
       {/* CTA Final */}
       <section className="pb-48">
         <div className="glass p-16 md:p-32 text-center space-y-16 relative overflow-hidden border-white/10">
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary opacity-[0.05] blur-[150px] -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent opacity-[0.05] blur-[120px] translate-y-1/2 -translate-x-1/2" />
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--accent-2)] opacity-[0.05] blur-[150px] -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[var(--accent-3)] opacity-[0.05] blur-[120px] translate-y-1/2 -translate-x-1/2" />
             
             <div className="space-y-6 relative z-10">
                 <h2 className="text-6xl md:text-[8rem] font-light uppercase leading-none tracking-tighter">

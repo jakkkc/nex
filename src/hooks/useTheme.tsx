@@ -7,21 +7,13 @@ interface ThemeContextType {
   mode: Theme;
   colorTheme: ColorTheme;
   toggleMode: () => void;
-  setColorTheme: (theme: ColorTheme) => void;
+  setTheme: (theme: ColorTheme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setMode] = useState<Theme>(() => (localStorage.getItem('theme') as Theme) || 'dark');
-  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => (localStorage.getItem('colorTheme') as ColorTheme) || 'neon-void');
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(mode);
-    localStorage.setItem('theme', mode);
-  }, [mode]);
+  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => (localStorage.getItem('theme') as ColorTheme) || 'neon-void');
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -29,11 +21,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('theme', colorTheme);
   }, [colorTheme]);
 
-  const toggleMode = () => setMode(prev => (prev === 'light' ? 'dark' : 'light'));
-  const setColorTheme = (theme: ColorTheme) => setColorThemeState(theme);
+  const toggleMode = () => {}; // No-op as requested theme structure takes over
+  const setTheme = (theme: ColorTheme) => setColorThemeState(theme);
 
   return (
-    <ThemeContext.Provider value={{ mode, colorTheme, toggleMode, setColorTheme }}>
+    <ThemeContext.Provider value={{ mode: 'dark', colorTheme, toggleMode, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
