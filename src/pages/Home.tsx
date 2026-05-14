@@ -20,7 +20,8 @@ import {
   Send,
   Coffee,
   Trees,
-  Check
+  Check,
+  ExternalLink
 } from 'lucide-react';
 import { IMAGES, SOCIAL_LINKS } from '../constants';
 import { useMagnetic } from '../hooks/useMagnetic';
@@ -141,14 +142,14 @@ const Home: React.FC = () => {
           </motion.div>
           
           <motion.h1 variants={itemVariants} className="text-[12vw] md:text-[10rem] font-light uppercase leading-[0.8] tracking-[0.06em]">
-            Stop Posting.<br />
-            <span className="text-gradient font-normal">Start Converting.</span>
+            Digital<br />
+            <span className="text-gradient font-normal">Aesthetics.</span>
           </motion.h1>
 
           <div className="flex flex-col lg:flex-row items-start lg:items-end gap-16">
             <motion.p variants={itemVariants} className="text-lg md:text-2xl text-text-secondary leading-relaxed max-w-2xl font-light">
-               I turn social media into your #1 revenue channel. 
-               Data-driven strategies that deliver measurable ROI for B2B, retail, service businesses, and startups.
+               We bridge the gap between human desire and data-driven conversion. 
+               Premium architecture for visionary enterprises.
             </motion.p>
             
             <motion.div variants={itemVariants} className="flex flex-wrap gap-8 w-full lg:w-auto">
@@ -303,9 +304,24 @@ const Home: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
-            { name: "Coffee Garden Suites", icon: <Coffee />, desc: "Social media management, content creation, and growth strategy for boutique accommodation." },
-            { name: "Hunters Paradise Cottages", icon: <Trees />, desc: "Full digital marketing management including social media, content creation, and performance analytics." },
-            { name: "Hunters Paradise Tuuti", icon: <Zap />, desc: "Strategic social media campaigns, engagement optimization, and brand visibility expansion." }
+            { 
+              name: "Coffee Garden Suites", 
+              icon: <Coffee />, 
+              desc: "Social media management, content creation, and growth strategy for boutique accommodation.",
+              link: "https://instagram.com/coffeegardensuites"
+            },
+            { 
+              name: "Hunters Paradise Cottages", 
+              icon: <Trees />, 
+              desc: "Full digital marketing management including social media, content creation, and performance analytics.",
+              link: "https://instagram.com/huntersparadisecottages"
+            },
+            { 
+              name: "Hunters Paradise Tuuti", 
+              icon: <Zap />, 
+              desc: "Strategic social media campaigns, engagement optimization, and brand visibility expansion.",
+              link: "https://instagram.com/huntersparadisetuuti"
+            }
           ].map((client, i) => (
             <TiltCard key={i} className="group p-1">
               <div className="glass h-full p-10 space-y-8 flex flex-col justify-between border-transparent group-hover:border-primary/10 transition-all">
@@ -317,10 +333,15 @@ const Home: React.FC = () => {
                   <p className="text-text-secondary font-light text-sm leading-relaxed opacity-60">{client.desc}</p>
                 </div>
                 <div className="pt-10 flex gap-4">
-                   <div className="w-8 h-8 glass flex items-center justify-center opacity-40 hover:opacity-100 transition-opacity">
-                     <Users className="w-4 h-4" />
-                   </div>
-                   <div className="w-8 h-8 glass flex items-center justify-center opacity-40 hover:opacity-100 transition-opacity">
+                   <a 
+                    href={client.link} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="w-10 h-10 glass flex items-center justify-center text-primary hover:bg-primary/10 transition-all"
+                   >
+                     <ExternalLink className="w-4 h-4" />
+                   </a>
+                   <div className="w-10 h-10 glass flex items-center justify-center opacity-40">
                      <TrendingUp className="w-4 h-4" />
                    </div>
                 </div>

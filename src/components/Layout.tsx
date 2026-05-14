@@ -209,7 +209,7 @@ const Layout: React.FC = () => {
                 <span className="text-2xl font-light tracking-widest uppercase text-white">NexInk Ltd</span>
               </div>
               <p className="text-[15px] leading-relaxed text-text-secondary">
-                Revenue-focused social media and design strategies that deliver measurable ROI for growth-minded businesses.
+                Redefining the standard of digital aesthetics through systematic glassmorphism and data-driven intelligence.
               </p>
             </div>
             
@@ -227,7 +227,7 @@ const Layout: React.FC = () => {
               <div className="flex flex-col gap-4 text-xs font-light tracking-widest uppercase">
                 <a href={SOCIAL_LINKS.LINKEDIN} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
                 <a href={SOCIAL_LINKS.GITHUB} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">GitHub</a>
-                <a href={SOCIAL_LINKS.FACEBOOK} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Facebook</a>
+                <a href={SOCIAL_LINKS.SUBSTACK} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Substack</a>
               </div>
             </div>
 

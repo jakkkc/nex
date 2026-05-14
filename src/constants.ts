@@ -7,7 +7,7 @@ export const IMAGES = {
 };
 
 export const SOCIAL_LINKS = {
-  FACEBOOK: "https://facebook.com/coffeegardensuites",
+  SUBSTACK: "https://substack.com/@nexink?r=8cf1uv&utm_campaign=profile&utm_medium=profile-page",
   INSTAGRAM: "https://instagram.com/coffeegardensuites",
   TIKTOK: "https://tiktok.com/@coffeegardensuites",
   LINKEDIN: "https://www.linkedin.com/in/jackson-mwaniki",
