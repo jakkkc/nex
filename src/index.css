@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Anton&family=Cormorant+Garamond:ital,wght@1,400;1,700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/glacial-indifference');
+
+@theme {
+  --font-sans: "Glacial Indifference", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Anton", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-text-secondary: var(--text-secondary);
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-20px) rotate(2deg); }
+    66% { transform: translateY(10px) rotate(-1deg); }
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg) translateX(180px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(180px) rotate(-360deg); }
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-orbit {
+  animation: orbit 25s linear infinite;
+}
+
+:root {
+  --primary: #0ea5e9;
+  --secondary: #0284c7;
+  --accent: #f472b6;
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --text: #020617;
+  --text-secondary: #475569;
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-color-theme="pink"] {
+  --primary: #db2777;
+  --secondary: #be185d;
+  --accent: #0ea5e9;
+}
+
+:root[data-color-theme="purple"] {
+  --primary: #9333ea;
+  --secondary: #7e22ce;
+  --accent: #10b981;
+}
+
+:root[data-color-theme="green"] {
+  --primary: #059669;
+  --secondary: #047857;
+  --accent: #f59e0b;
+}
+
+.dark {
+  --bg: #020617;
+  --surface: #0f172a;
+  --text: #f8fafc;
+  --text-secondary: #94a3b8;
+  --glass-bg: rgba(15, 23, 42, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text transition-colors duration-700 antialiased selection:bg-primary selection:text-white;
+    font-family: var(--font-sans);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-repeat: repeat;
+    background-blend-mode: overlay;
+  }
+}
+
+@utility glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+}
+
+@utility glass-card {
+  @apply glass rounded-[2.5rem] p-6 sm:p-10 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)];
+}
+
+@utility text-gradient {
+  @apply bg-gradient-to-br from-primary via-accent to-secondary bg-clip-text text-transparent;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minMax(100px, auto);
+  gap: 1.5rem;
+}

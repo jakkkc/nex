@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      // For this app, we'll bootstrap the first user as admin or check a collection
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Post Validation
+    function isValidPost(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.status in ['draft', 'published', 'scheduled'] &&
+             (!('coverImage' in data) || (data.coverImage is string && data.coverImage.size() <= 1000)) &&
+             (!('mediaUrl' in data) || (data.mediaUrl is string && data.mediaUrl.size() <= 1000)) &&
+             (!('mediaType' in data) || (data.mediaType in ['image', 'video'])) &&
+             data.authorId == request.auth.uid &&
+             data.createdAt == request.time &&
+             data.updatedAt == request.time;
+    }
+
+    // Posts Collection
+    match /posts/{postId} {
+      allow read: if (existing().status == 'published' && (!('scheduledAt' in existing()) || existing().scheduledAt <= request.time)) || isAdmin() || (isSignedIn() && existing().authorId == request.auth.uid);
+      
+      allow create: if isSignedIn() && isEmailVerified() && isValidPost(incoming());
+      
+      allow update: if isSignedIn() && isEmailVerified() && 
+                    existing().authorId == request.auth.uid &&
+                    incoming().authorId == existing().authorId &&
+                    incoming().createdAt == existing().createdAt &&
+                    incoming().updatedAt == request.time &&
+                    // Validate field types during update too
+                    incoming().title is string && 
+                    incoming().status in ['draft', 'published', 'scheduled'];
+
+      allow delete: if isSignedIn() && (existing().authorId == request.auth.uid || isAdmin());
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Admin collection (to bootstrapping admins)
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only manageable via Firebase Console or special script
+    }
+  }
+}
