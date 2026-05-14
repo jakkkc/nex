@@ -30,6 +30,7 @@ const Admin: React.FC = () => {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Partial<Post> | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -86,6 +87,7 @@ const Admin: React.FC = () => {
     };
 
     try {
+      setErrorMsg(null);
       if (editingPost.id) {
         await updatePost(editingPost.id, postData);
       } else {
@@ -97,8 +99,14 @@ const Admin: React.FC = () => {
       setIsEditorOpen(false);
       setEditingPost(null);
       fetchPosts();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      try {
+        const firestoreError = JSON.parse(error.message);
+        setErrorMsg(firestoreError.error || 'Permission Denied');
+      } catch {
+        setErrorMsg('Failed to save protocol. Check system integrity.');
+      }
     }
   };
 
@@ -255,6 +263,11 @@ const Admin: React.FC = () => {
               </div>
 
               <div className="flex-grow overflow-y-auto p-8 space-y-10">
+                {errorMsg && (
+                  <div className="bg-pink/10 border border-pink/20 text-pink text-xs p-4 rounded-xl mono-accent">
+                    ERROR: {errorMsg}
+                  </div>
+                )}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-2">Objective Title</label>
                   <input 

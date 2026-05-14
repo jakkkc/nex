@@ -40,6 +40,10 @@ service cloud.firestore {
              (!('coverImage' in data) || (data.coverImage is string && data.coverImage.size() <= 1000)) &&
              (!('mediaUrl' in data) || (data.mediaUrl is string && data.mediaUrl.size() <= 1000)) &&
              (!('mediaType' in data) || (data.mediaType in ['image', 'video'])) &&
+             (!('excerpt' in data) || (data.excerpt is string && data.excerpt.size() <= 500)) &&
+             (!('authorName' in data) || (data.authorName is string && data.authorName.size() <= 100)) &&
+             (!('tags' in data) || (data.tags is list && data.tags.size() <= 20)) &&
+             (!('publishedAt' in data) || (data.publishedAt == null || data.publishedAt is timestamp)) &&
              data.authorId == request.auth.uid &&
              data.createdAt == request.time &&
              data.updatedAt == request.time;
@@ -49,16 +53,14 @@ service cloud.firestore {
     match /posts/{postId} {
       allow read: if (existing().status == 'published' && (!('scheduledAt' in existing()) || existing().scheduledAt <= request.time)) || isAdmin() || (isSignedIn() && existing().authorId == request.auth.uid);
       
-      allow create: if isSignedIn() && isEmailVerified() && isValidPost(incoming());
+      allow create: if isSignedIn() && isValidPost(incoming());
       
-      allow update: if isSignedIn() && isEmailVerified() && 
+      allow update: if isSignedIn() && 
                     existing().authorId == request.auth.uid &&
                     incoming().authorId == existing().authorId &&
                     incoming().createdAt == existing().createdAt &&
                     incoming().updatedAt == request.time &&
-                    // Validate field types during update too
-                    incoming().title is string && 
-                    incoming().status in ['draft', 'published', 'scheduled'];
+                    isValidPost(incoming());
 
       allow delete: if isSignedIn() && (existing().authorId == request.auth.uid || isAdmin());
     }

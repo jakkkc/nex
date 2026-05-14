@@ -12,7 +12,54 @@ import {
   Timestamp,
   serverTimestamp 
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId?: string | null;
+    email?: string | null;
+    emailVerified?: boolean | null;
+    isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData?.map(provider => ({
+        providerId: provider.providerId,
+        email: provider.email,
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 export interface Post {
   id?: string;
@@ -49,23 +96,33 @@ export const getPosts = async (isAdmin = false) => {
     );
   }
   
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as object) } as Post))
-    .filter(post => {
-      if (isAdmin) return true;
-      if (post.status === 'published') return true;
-      if (post.status === 'scheduled' && post.scheduledAt && post.scheduledAt.toMillis() <= now.toMillis()) return true;
-      return false;
-    });
+  try {
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as object) } as Post))
+      .filter(post => {
+        if (isAdmin) return true;
+        if (post.status === 'published') return true;
+        if (post.status === 'scheduled' && post.scheduledAt && post.scheduledAt.toMillis() <= now.toMillis()) return true;
+        return false;
+      });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, COLLECTION);
+    return [];
+  }
 };
 
 export const getPost = async (id: string) => {
   const docRef = doc(db, COLLECTION, id);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    return { id: docSnap.id, ...(docSnap.data() as object) } as Post;
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...(docSnap.data() as object) } as Post;
+    }
+    return null;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.GET, `${COLLECTION}/${id}`);
+    return null;
   }
-  return null;
 };
 
 export const createPost = async (post: Partial<Post>) => {
@@ -76,16 +133,28 @@ export const createPost = async (post: Partial<Post>) => {
     updatedAt: now,
     publishedAt: post.status === 'published' ? now : null
   };
-  return await addDoc(collection(db, COLLECTION), data);
+  try {
+    return await addDoc(collection(db, COLLECTION), data);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, COLLECTION);
+  }
 };
 
 export const updatePost = async (id: string, post: Partial<Post>) => {
-  return await updateDoc(doc(db, COLLECTION, id), {
-    ...(post as any),
-    updatedAt: serverTimestamp()
-  });
+  try {
+    return await updateDoc(doc(db, COLLECTION, id), {
+      ...(post as any),
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, `${COLLECTION}/${id}`);
+  }
 };
 
 export const deletePost = async (id: string) => {
-  return await deleteDoc(doc(db, COLLECTION, id));
+  try {
+    return await deleteDoc(doc(db, COLLECTION, id));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `${COLLECTION}/${id}`);
+  }
 };
