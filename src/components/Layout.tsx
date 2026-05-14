@@ -13,9 +13,8 @@ import {
   Globe
 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
-import { useAuth } from '../hooks/useAuth';
 import { useMagnetic } from '../hooks/useMagnetic';
-import { IMAGES } from '../constants';
+import { IMAGES, SOCIAL_LINKS } from '../constants';
 
 const Particle: React.FC<{ x: number; y: number; color: string }> = ({ x, y, color }) => {
   return (
@@ -58,7 +57,6 @@ const ThemeSwitcher: React.FC = () => {
 };
 
 const Layout: React.FC = () => {
-  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const [particles, setParticles] = useState<{ id: number; x: number; y: number; color: string }[]>([]);
@@ -137,31 +135,32 @@ const Layout: React.FC = () => {
               className="w-10 h-10 object-contain rounded-[10px] shadow-lg transition-transform hover:scale-110" 
               alt="NexInk Logo" 
             />
-            <span className="text-xl font-light tracking-[0.06em] uppercase text-white">NexInk</span>
+            <span className="text-xl font-light tracking-[0.06em] uppercase text-white">NexInk Ltd</span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-12 absolute left-1/2 -translate-x-1/2">
             {[
-              { name: 'Home', path: '/' },
-              { name: 'Intel', path: '/blog' },
-              { name: 'Access', path: '/login' }
+              { name: 'Services', path: '#services' },
+              { name: 'Portfolio', path: '#portfolio' },
+              { name: 'About', path: '#about' },
+              { name: 'Contact', path: '#contact' }
             ].map((link) => (
-              <Link 
+              <a 
                 key={link.path}
-                to={link.path} 
+                href={link.path} 
                 className="relative text-[11px] mono-accent text-white/70 hover:text-white transition-colors group px-1"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-1/2 w-0 h-[1.5px] bg-gradient-to-r from-[var(--accent-1)] to-[var(--accent-3)] -translate-x-1/2 scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
-              </Link>
+              </a>
             ))}
           </div>
 
           <div className="hidden md:block">
-             <Link to="/blog" className="glow-border px-8 py-3 text-[11px] mono-accent text-white uppercase">
-               Deploy Intel
-             </Link>
+             <a href="#contact" className="glow-border px-8 py-3 text-[11px] mono-accent text-white uppercase">
+               Get Quote
+             </a>
           </div>
 
           {/* Mobile Nav Toggle */}
@@ -184,10 +183,10 @@ const Layout: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               className="md:hidden mt-4 glass p-8 flex flex-col gap-6"
             >
-              <Link to="/" className="text-2xl font-light uppercase tracking-widest">Home</Link>
-              <Link to="/blog" className="text-2xl font-light uppercase tracking-widest">Intel</Link>
-              {user && <Link to="/admin" className="text-2xl font-light uppercase tracking-widest">Terminal</Link>}
-              <Link to="/login" className="text-2xl font-light uppercase tracking-widest">Login</Link>
+              <a href="#services" className="text-2xl font-light uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Services</a>
+              <a href="#portfolio" className="text-2xl font-light uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Portfolio</a>
+              <a href="#about" className="text-2xl font-light uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>About</a>
+              <a href="#contact" className="text-2xl font-light uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Contact</a>
             </motion.div>
           )}
         </AnimatePresence>
@@ -207,28 +206,28 @@ const Layout: React.FC = () => {
                   className="w-12 h-12 object-contain" 
                   alt="NexInk" 
                 />
-                <span className="text-2xl font-light tracking-widest uppercase text-white">NexInk</span>
+                <span className="text-2xl font-light tracking-widest uppercase text-white">NexInk Ltd</span>
               </div>
               <p className="text-[15px] leading-relaxed text-text-secondary">
-                Redefining the standard of digital aesthetics through systematic glassmorphism and data-driven intelligence.
+                Revenue-focused social media and design strategies that deliver measurable ROI for growth-minded businesses.
               </p>
             </div>
             
             <div className="space-y-6">
               <h4 className="text-[10px] mono-accent opacity-40">System</h4>
               <div className="flex flex-col gap-4 text-xs font-light tracking-widest uppercase">
-                <Link to="/" className="hover:text-primary transition-colors">Core</Link>
-                <Link to="/blog" className="hover:text-primary transition-colors">Intelligence</Link>
-                <Link to="/login" className="hover:text-primary transition-colors">Access</Link>
+                <a href="#services" className="hover:text-primary transition-colors">Services</a>
+                <a href="#portfolio" className="hover:text-primary transition-colors">Portfolio</a>
+                <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
               </div>
             </div>
 
             <div className="space-y-6">
               <h4 className="text-[10px] mono-accent opacity-40">Frequency</h4>
               <div className="flex flex-col gap-4 text-xs font-light tracking-widest uppercase">
-                <a href="#" className="hover:text-primary transition-colors">X / Terminal</a>
-                <a href="#" className="hover:text-primary transition-colors">Network</a>
-                <a href="#" className="hover:text-primary transition-colors">Artifacts</a>
+                <a href={SOCIAL_LINKS.LINKEDIN} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+                <a href={SOCIAL_LINKS.GITHUB} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">GitHub</a>
+                <a href={SOCIAL_LINKS.FACEBOOK} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Facebook</a>
               </div>
             </div>
 
@@ -245,7 +244,7 @@ const Layout: React.FC = () => {
           </div>
           
           <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-[10px] mono-accent opacity-30 uppercase tracking-widest">© 2024 NEXINK SYSTEMS // v3.0 // GLASS</div>
+            <div className="text-[10px] mono-accent opacity-30 uppercase tracking-widest">© 2025 NEXINK LTD // v3.0 // ANALYTICS DRIVEN</div>
             <div className="flex gap-12 text-[10px] mono-accent opacity-40 uppercase tracking-widest">
               <a href="#">Privacy Protocol</a>
               <a href="#">Terms of Access</a>

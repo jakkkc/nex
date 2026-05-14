@@ -7,8 +7,11 @@ export const IMAGES = {
 };
 
 export const SOCIAL_LINKS = {
-  FACEBOOK: "https://facebook.com",
-  INSTAGRAM: "https://instagram.com",
-  TIKTOK: "https://tiktok.com",
-  LINKEDIN: "https://linkedin.com",
+  FACEBOOK: "https://facebook.com/coffeegardensuites",
+  INSTAGRAM: "https://instagram.com/coffeegardensuites",
+  TIKTOK: "https://tiktok.com/@coffeegardensuites",
+  LINKEDIN: "https://www.linkedin.com/in/jackson-mwaniki",
+  GITHUB: "https://github.com/jakkkc",
+  EMAIL: "jacmwaniki@gmail.com",
+  PHONE: "+254742881370",
 };
