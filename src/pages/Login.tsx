@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { LogIn, Rocket, Shield } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
+import { MagneticButton } from '../components/UI';
 
 const Login: React.FC = () => {
   const { user, loading } = useAuth();
@@ -36,42 +37,42 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none -z-10">
-        <div className="text-[30vw] font-display uppercase tracking-widest opacity-[0.02] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12 select-none">
-          SECURE
+        <div className="text-[30vw] font-light uppercase tracking-[0.2em] opacity-[0.02] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12 select-none">
+          SYSTEM
         </div>
       </div>
       
       <motion.div 
-        initial={{ opacity: 0, y: 40, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        className="max-w-xl w-full glass p-10 md:p-20 text-center space-y-12 border-white/20 rounded-[3rem] relative z-10 shadow-3xl"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl w-full glass p-12 md:p-24 text-center space-y-16 border-white/5 relative z-10"
       >
-        <div className="space-y-8">
-          <div className="w-20 h-20 bg-primary text-white rounded-[1.5rem] flex items-center justify-center mx-auto shadow-3xl shadow-primary/40 rotate-6 group">
-            <Shield className="w-10 h-10 group-hover:rotate-12 transition-transform" />
+        <div className="space-y-10">
+          <div className="w-20 h-20 glass border-white/20 text-primary flex items-center justify-center mx-auto rotate-6 group">
+            <Shield className="w-10 h-10 group-hover:rotate-12 transition-all" />
           </div>
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl font-display uppercase tracking-tighter">Terminal<br />Access</h1>
-            <p className="text-xl md:text-2xl text-text-secondary font-serif italic max-w-sm mx-auto">Tactical Growth Officers Only. Valid identity protocol required.</p>
+          <div className="space-y-6">
+            <h1 className="text-5xl md:text-6xl font-light uppercase tracking-widest leading-tight">Identity<br />Protocol</h1>
+            <p className="text-text-secondary font-light max-w-sm mx-auto leading-relaxed">Authorized intelligence officers only. Decryption required.</p>
           </div>
         </div>
 
-        <button 
+        <MagneticButton 
           onClick={handleLogin}
-          className="w-full py-6 bg-primary text-white font-black uppercase tracking-[0.2em] text-sm rounded-2xl flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-3xl shadow-primary/30 group"
+          className="w-full flex items-center justify-center gap-6"
         >
-          <div className="bg-white/20 p-2 rounded-lg group-hover:rotate-12 transition-transform">
-            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6 contrast-125" />
+          <div className="bg-white/5 p-2 rounded-lg group-hover:bg-primary/10 transition-colors">
+            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-6 h-6 contrast-125 grayscale group-hover:grayscale-0 transition-all" />
           </div>
-          Initiate with Google
-        </button>
+          Initiate Authentication
+        </MagneticButton>
 
-        <div className="pt-10 border-t border-black/5 dark:border-white/5 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">
-             NexInk v1.0.42 // Strategic Mastery Hub
+        <div className="pt-12 border-t border-white/5 flex flex-col items-center gap-6">
+          <div className="text-[10px] mono-accent opacity-30">
+             NEXINK SECURE CORE // v2.0.1
           </div>
-          <Link to="/" className="text-[9px] font-bold uppercase tracking-widest opacity-40 hover:text-primary transition-colors">
-            Abort and return to public interface
+          <Link to="/" className="text-[10px] mono-accent opacity-50 hover:opacity-100 hover:text-primary transition-all">
+            Return to Core Interface
           </Link>
         </div>
       </motion.div>

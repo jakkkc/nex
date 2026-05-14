@@ -20,6 +20,7 @@ import { auth, storage } from '../lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { format } from 'date-fns';
 import { IMAGES } from '../constants';
+import { MagneticButton, TiltCard } from '../components/UI';
 
 const Admin: React.FC = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -127,33 +128,33 @@ const Admin: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-24 space-y-16">
       <header className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-10">
-        <div className="space-y-6">
+        <div className="space-y-6 text-left">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.4em]"
+            className="inline-flex items-center gap-2 px-4 py-1 glass border-white/10 text-primary text-[10px] mono-accent"
           >
             <ShieldCheck className="w-4 h-4" /> Root Terminal
           </motion.div>
-          <h1 className="text-7xl md:text-[8rem] font-display uppercase leading-[0.8] tracking-tighter">
+          <h1 className="text-7xl md:text-[8rem] font-light uppercase leading-[0.8] tracking-[0.06em]">
              Strategic <span className="text-gradient">Hub.</span>
           </h1>
-          <p className="text-xl text-text-secondary font-serif italic">Operational command for NexInk tactical dispatch.</p>
+          <p className="text-xl text-text-secondary font-light">Operational command for NexInk tactical dispatch.</p>
         </div>
         
         <div className="flex gap-4 w-full md:w-auto">
-          <button 
+          <MagneticButton 
             onClick={() => {
               setEditingPost({ status: 'draft', tags: [] });
               setIsEditorOpen(true);
             }}
-            className="flex-1 md:flex-none px-10 py-5 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-3xl shadow-primary/30"
+            className="flex-1 md:flex-none px-10 py-5"
           >
-            <Plus className="w-5 h-5" /> Launch Protocol
-          </button>
+            <Plus className="w-5 h-5 inline-block mr-2" /> Launch Protocol
+          </MagneticButton>
           <button 
             onClick={handleSignOut}
-            className="px-8 py-5 glass text-text rounded-2xl font-black text-xs uppercase tracking-widest"
+            className="px-8 py-5 glass text-text text-[11px] mono-accent uppercase hover:bg-white/5 transition-colors"
           >
             Abort
           </button>
@@ -168,31 +169,31 @@ const Admin: React.FC = () => {
           { label: "Draft Frameworks", value: posts.filter(p => p.status === 'draft').length, color: "text-accent", icon: <Edit3 /> },
           { label: "Integrity", value: "DEEP", color: "text-primary", icon: <ShieldCheck /> },
         ].map((stat, i) => (
-          <div key={i} className="glass-card p-10 flex flex-col justify-center border-none group">
+          <TiltCard key={i} className="p-10 flex flex-col justify-center border-none">
             <div className={`${stat.color} mb-4 group-hover:scale-110 transition-transform`}>
               {React.cloneElement(stat.icon as React.ReactElement<any>, { className: "w-6 h-6" })}
             </div>
-            <div className={`text-4xl md:text-5xl font-black ${stat.color}`}>{stat.value}</div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mt-1">{stat.label}</div>
-          </div>
+            <div className={`text-4xl md:text-5xl font-light ${stat.color}`}>{stat.value}</div>
+            <div className="text-[10px] mono-accent opacity-40 mt-1">{stat.label}</div>
+          </TiltCard>
         ))}
       </div>
 
-      <div className="space-y-6">
-        <h2 className="text-2xl font-black uppercase tracking-widest opacity-30">Intelligence Stream</h2>
+      <div className="space-y-12">
+        <h2 className="text-[10px] mono-accent opacity-30">Intelligence Stream</h2>
         <div className="grid grid-cols-1 gap-6">
           {posts.map((post) => (
-            <div key={post.id} className="glass-card flex flex-col md:flex-row items-center gap-8 border-none p-6 md:p-8 hover:bg-primary/5 transition-all group">
-               <div className="w-full md:w-28 aspect-square rounded-2xl overflow-hidden glass border-none">
+            <TiltCard key={post.id} className="flex flex-col md:flex-row items-center gap-8 border-none !p-6 md:!p-8 hover:bg-white/5 transition-all">
+               <div className="w-full md:w-28 aspect-square overflow-hidden glass border-none">
                   <img src={post.coverImage || IMAGES.B} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="" />
                </div>
                <div className="flex-grow space-y-2 text-center md:text-left">
-                  <div className="flex flex-wrap justify-center md:justify-start gap-4 text-[10px] font-black uppercase tracking-widest opacity-40">
+                  <div className="flex flex-wrap justify-center md:justify-start gap-4 text-[10px] mono-accent opacity-40">
                      <span>{format(post.createdAt.toDate(), 'MMM dd, yyyy')}</span>
-                     <span className={`${post.status === 'published' ? 'text-green-500' : 'text-primary'}`}>{post.status}</span>
+                     <span className={`${post.status === 'published' ? 'text-primary' : 'text-accent'}`}>{post.status}</span>
                   </div>
-                  <h3 className="text-3xl font-black uppercase leading-none tracking-tight">{post.title}</h3>
-                  <p className="text-text-secondary text-sm font-medium line-clamp-1">{post.excerpt}</p>
+                  <h3 className="text-3xl font-light uppercase leading-none tracking-tight">{post.title}</h3>
+                  <p className="text-text-secondary text-sm font-light line-clamp-1">{post.excerpt}</p>
                </div>
                <div className="flex gap-4 w-full md:w-auto">
                   <button 
@@ -200,24 +201,24 @@ const Admin: React.FC = () => {
                       setEditingPost(post);
                       setIsEditorOpen(true);
                     }}
-                    className="flex-1 md:flex-none p-5 rounded-2xl glass hover:bg-primary hover:text-white transition-all border-none"
+                    className="flex-1 md:flex-none p-5 glass hover:bg-primary/20 transition-all border-none"
                   >
                     <Edit3 className="w-5 h-5 mx-auto" />
                   </button>
                   <button 
                     onClick={() => post.id && handleDelete(post.id)}
-                    className="flex-1 md:flex-none p-5 rounded-2xl glass hover:bg-red-500 hover:text-white transition-all border-none"
+                    className="flex-1 md:flex-none p-5 glass hover:bg-pink/20 transition-all border-none"
                   >
                     <Trash2 className="w-5 h-5 mx-auto" />
                   </button>
                   <Link 
                     to={`/blog/${post.id}`}
-                    className="flex-1 md:flex-none p-5 rounded-2xl glass hover:bg-primary hover:text-white transition-all border-none"
+                    className="flex-1 md:flex-none p-5 glass hover:bg-primary/20 transition-all border-none"
                   >
                     <ChevronRight className="w-5 h-5 mx-auto" />
                   </Link>
                </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
       </div>

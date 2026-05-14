@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
-type ColorTheme = 'blue' | 'pink' | 'purple' | 'green';
+type ColorTheme = 'neon-void' | 'frost' | 'cosmic' | 'ember';
 
 interface ThemeContextType {
   mode: Theme;
@@ -13,8 +13,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setMode] = useState<Theme>(() => (localStorage.getItem('theme') as Theme) || 'light');
-  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => (localStorage.getItem('colorTheme') as ColorTheme) || 'blue');
+  const [mode, setMode] = useState<Theme>(() => (localStorage.getItem('theme') as Theme) || 'dark');
+  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => (localStorage.getItem('colorTheme') as ColorTheme) || 'neon-void');
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -25,8 +25,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.setAttribute('data-color-theme', colorTheme);
-    localStorage.setItem('colorTheme', colorTheme);
+    root.setAttribute('data-theme', colorTheme);
+    localStorage.setItem('theme', colorTheme);
   }, [colorTheme]);
 
   const toggleMode = () => setMode(prev => (prev === 'light' ? 'dark' : 'light'));

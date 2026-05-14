@@ -1,35 +1,90 @@
-import React from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import React, { useRef, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { 
   ArrowRight, 
-  BarChart3, 
-  CheckCircle2, 
-  MessageSquare, 
   Rocket, 
-  ShieldCheck, 
-  Target, 
   TrendingUp, 
-  Users,
-  Zap,
+  Target, 
   Star,
-  Quote
+  Quote,
+  Users
 } from 'lucide-react';
-import { IMAGES, SOCIAL_LINKS } from '../constants';
+import { IMAGES } from '../constants';
+import { useMagnetic } from '../hooks/useMagnetic';
+
+const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const shineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const shine = shineRef.current;
+    if (!card || !shine) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      
+      card.style.transform = `perspective(1200px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+      
+      const shineX = (e.clientX - rect.left) / rect.width * 100;
+      const shineY = (e.clientY - rect.top) / rect.height * 100;
+      shine.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.1) 0%, transparent 80%)`;
+    };
+
+    const handleMouseLeave = () => {
+      card.style.transform = `perspective(1200px) rotateY(0deg) rotateX(0deg)`;
+      card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+      shine.style.background = 'transparent';
+    };
+
+    const handleMouseEnter = () => {
+      card.style.transition = 'none';
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    card.addEventListener('mouseleave', handleMouseLeave);
+    card.addEventListener('mouseenter', handleMouseEnter);
+
+    return () => {
+      card.removeEventListener('mousemove', handleMouseMove);
+      card.removeEventListener('mouseleave', handleMouseLeave);
+      card.removeEventListener('mouseenter', handleMouseEnter);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className={`glass-card relative overflow-hidden group ${className}`}
+      style={{ transformStyle: 'preserve-3d' }}
+    >
+      <div 
+        ref={shineRef}
+        className="absolute inset-0 pointer-events-none z-10"
+      />
+      <div style={{ transform: 'translateZ(20px)' }}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const MagneticButton: React.FC<{ children: React.ReactNode; className?: string; onClick?: () => void }> = ({ children, className = "", onClick }) => {
+    const ref = useMagnetic(0.35);
+    return (
+        <button 
+            ref={ref}
+            onClick={onClick}
+            className={`glow-border px-8 py-4 text-[11px] mono-accent ${className}`}
+        >
+            {children}
+        </button>
+    );
+};
 
 const Home: React.FC = () => {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    setMousePos({
-      x: (clientX / innerWidth - 0.5) * 20,
-      y: (clientY / innerHeight - 0.5) * 20
-    });
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -39,179 +94,165 @@ const Home: React.FC = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 40, scale: 0.9 },
+    hidden: { opacity: 0, y: 30 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1,
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } as any
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } as any
     }
   };
 
   return (
-    <div onMouseMove={handleMouseMove} className="flex flex-col gap-24 md:gap-48 px-4 md:px-8 max-w-7xl mx-auto pb-48">
-      {/* Dynamic Hero */}
-      <section className="min-h-[80vh] md:min-h-screen flex flex-col justify-center relative pt-20">
-        <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-primary/5 to-transparent">
-            <motion.div 
-              style={{ y, rotateZ: 5 }}
-              className="text-[30vw] md:text-[20vw] font-display uppercase leading-[0.7] opacity-[0.02] dark:opacity-[0.04] absolute top-10 left-0 whitespace-nowrap select-none"
-            >
-              STRATEGY PERFORMANCE
-            </motion.div>
-        </div>
-
+    <div className="flex flex-col gap-32 md:gap-64 px-4 md:px-8 max-w-7xl mx-auto pb-48 overflow-hidden">
+      {/* Hero Section */}
+      <section className="min-h-[90vh] flex flex-col justify-center relative pt-20">
         <motion.div 
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true }}
           variants={containerVariants}
-          className="space-y-8 md:space-y-12 relative z-10"
+          className="space-y-12 relative z-10"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-4 px-6 py-2 rounded-full glass text-primary text-[10px] md:text-xs font-black tracking-[0.4em] uppercase border-white/20">
-            <Rocket className="w-4 h-4 animate-bounce" /> Tactical Mastery
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-4 px-6 py-2 rounded-full glass border-white/10 text-primary text-[10px] mono-accent">
+            <Rocket className="w-4 h-4" /> System Protocol: Dominance
           </motion.div>
           
-          <motion.h1 variants={itemVariants} className="text-[16vw] sm:text-[14vw] md:text-[11rem] font-display uppercase leading-[0.8] tracking-tighter">
-            Build <span className="italic font-serif font-light text-text-secondary">Legacy.</span><br />
-            <span className="text-gradient">Dominance.</span>
+          <motion.h1 variants={itemVariants} className="text-[14vw] md:text-[10rem] font-light uppercase leading-[0.9] tracking-[0.06em]">
+            Digital<br />
+            <span className="text-gradient font-normal">Aesthetics.</span>
           </motion.h1>
 
-          <div className="flex flex-col lg:flex-row items-start lg:items-end gap-10 md:gap-16">
-            <motion.p variants={itemVariants} className="text-lg md:text-3xl text-text-secondary leading-tight max-w-2xl font-medium tracking-tight">
-              We turn social stagnation into aggressive growth. 
-              Data-backed design for the elite business architect.
+          <div className="flex flex-col lg:flex-row items-start lg:items-end gap-16">
+            <motion.p variants={itemVariants} className="text-lg md:text-2xl text-text-secondary leading-relaxed max-w-2xl font-light">
+               We bridge the gap between human desire and data-driven conversion. 
+               Premium architecture for visionary enterprises.
             </motion.p>
             
-            <motion.div variants={itemVariants} className="flex flex-wrap gap-6 w-full lg:w-auto">
-              <button className="w-full sm:w-auto px-10 md:px-12 py-5 md:py-6 bg-primary text-white rounded-2xl font-black text-lg md:text-xl hover:rotate-3 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary/40 flex items-center justify-center gap-3 group overflow-hidden">
-                Audit My Growth <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </button>
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-8 w-full lg:w-auto">
+              <MagneticButton className="px-12 py-6">
+                Begin Transformation <ArrowRight className="inline-block ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </MagneticButton>
             </motion.div>
           </div>
         </motion.div>
       </section>
 
-      {/* 3D Reactive Image Showcase */}
-      <section className="relative">
+      {/* Services Grid */}
+      <section className="space-y-24">
         <motion.div 
-          initial={{ opacity: 0, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative group rounded-[3rem] md:rounded-[5rem] overflow-hidden glass border-none aspect-[4/5] md:aspect-[21/9]"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-4"
         >
-          <img 
-            src={IMAGES.A} 
-            className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" 
-            alt="Hero Visual" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 md:p-20 flex flex-col justify-end">
-            <div className="max-w-2xl space-y-4 md:space-y-8">
-              <div className="inline-block px-4 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-md shadow-2xl">Case Study 01</div>
-              <h3 className="text-4xl md:text-8xl font-display uppercase text-white leading-none tracking-tighter">Hunters Paradise Revenue Engine</h3>
-              <p className="text-white/70 text-lg md:text-2xl font-medium max-w-lg">+240% Growth in 90 Days</p>
-            </div>
-          </div>
+            <h4 className="text-[10px] mono-accent text-primary">Core Modules</h4>
+            <h2 className="text-4xl md:text-7xl font-light uppercase tracking-widest">Technological Edge</h2>
         </motion.div>
-      </section>
 
-      {/* High-Contrast Bento Pipeline */}
-      <section id="services" className="space-y-16">
-        <div className="flex flex-col md:flex-row items-start md:items-end gap-6 md:gap-12 border-l-4 border-primary pl-6">
-          <h2 className="text-7xl md:text-[10rem] font-display uppercase leading-none tracking-tighter">The<br />Pipeline</h2>
-          <p className="text-lg md:text-2xl text-text-secondary font-medium font-serif italic max-w-sm mb-2 md:mb-4">Our systematic process for total market capture.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
-            { title: "Revenue Conversion", desc: "Acquire customers at scale. We design the machines that build your wealth.", price: "30k", feat: "Lead Engines", icon: <TrendingUp /> },
-            { title: "Bespoke Creative", desc: "Design that stops the scroll. Force engagement through visual superiority.", price: "15k", feat: "Visual Assets", icon: <Star /> },
-            { title: "Strategic Intel", desc: "Real-time analytics that tell you exactly where to scale for maximum profit.", price: "25k", feat: "Deep Audit", icon: <Target /> }
+            { title: "Conversion Intelligence", desc: "Engineered revenue pipelines that scale with robotic precision.", icon: <TrendingUp />, label: "Module 01" },
+            { title: "Visual Superiority", desc: "Crafting distinct visual worlds that command absolute market attention.", icon: <Star />, label: "Module 02" },
+            { title: "Strategic Precision", desc: "Deep analytical audits to identify and exploit market inefficiencies.", icon: <Target />, label: "Module 03" }
           ].map((s, i) => (
-            <motion.div 
-              key={i} 
-              whileHover={{ y: -15 }}
-              className="glass-card flex flex-col justify-between group hover:bg-primary/5 transition-all h-[400px] md:h-[500px]"
-            >
-              <div className="space-y-6">
-                <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  {React.cloneElement(s.icon as React.ReactElement<any>, { className: "w-7 h-7" })}
+            <TiltCard key={i} className="h-[450px] flex flex-col justify-between group">
+              <div className="space-y-8">
+                <div className="text-[10px] mono-accent opacity-30">{s.label}</div>
+                <div className="w-16 h-16 glass flex items-center justify-center border-white/20 group-hover:bg-primary/10 transition-colors">
+                  {React.cloneElement(s.icon as React.ReactElement<any>, { className: "w-8 h-8 text-primary" })}
                 </div>
-                <h3 className="text-3xl md:text-4xl font-black leading-tight uppercase">{s.title}</h3>
-                <p className="text-text-secondary text-lg leading-relaxed font-medium">{s.desc}</p>
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">{s.feat}</span>
-                </div>
+                <h3 className="text-3xl font-light tracking-wide uppercase leading-tight">{s.title}</h3>
+                <p className="text-text-secondary font-light leading-relaxed">{s.desc}</p>
               </div>
-              <div className="pt-8 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-                <div className="text-2xl font-black">K. {s.price} <span className="text-xs opacity-40">/mo</span></div>
-                <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 shadow-xl">
-                  <ArrowRight className="w-6 h-6" />
-                </div>
+              <div className="pt-8 flex items-center justify-between">
+                 <div className="text-[10px] mono-accent group-hover:text-primary transition-colors">Learn More</div>
+                 <ArrowRight className="w-5 h-5 opacity-30 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
               </div>
-            </motion.div>
+            </TiltCard>
           ))}
         </div>
       </section>
 
-      {/* Social Proof with High-End Layout */}
-      <section className="py-20 space-y-24">
-        <h2 className="text-[15vw] md:text-[12rem] font-display uppercase tracking-tighter opacity-10 leading-none">Voices</h2>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-32 items-center -mt-20">
-           <div className="space-y-12">
-              <div className="glass-card border-none shadow-3xl space-y-8 relative overflow-hidden">
-                 <div className="absolute top-0 right-0 p-8 text-[12rem] font-serif leading-none opacity-5 -translate-y-12 translate-x-12">"</div>
-                 <Quote className="w-12 h-12 text-primary opacity-20" />
-                 <p className="text-2xl md:text-4xl font-serif italic text-text-secondary leading-tight md:leading-relaxed">
-                   "Jackson didn't just rebuild our social presence; he rebuilt our business model. 3.5x ROI isn't a goal anymore, it's our baseline."
-                 </p>
-                 <div className="flex items-center gap-4 pt-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center font-black text-primary">C</div>
-                    <div>
-                      <div className="font-black text-lg">Calvince Okomo</div>
-                      <div className="text-xs font-black uppercase tracking-widest opacity-40">Sales Lead // Hunters Paradise</div>
-                    </div>
-                 </div>
-              </div>
-           </div>
+      {/* Featured Showcase */}
+      <section>
+        <TiltCard className="aspect-[21/9] p-0 overflow-hidden relative group border-none">
+            <img 
+                src={IMAGES.A} 
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                alt="Showcase" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/20 to-transparent p-12 md:p-24 flex flex-col justify-end">
+                <div className="space-y-6 max-w-3xl">
+                    <div className="inline-block px-3 py-1 glass border-white/20 text-[10px] mono-accent">Operational Report 240</div>
+                    <h3 className="text-5xl md:text-8xl font-light uppercase tracking-widest text-white leading-none">Hunters Paradise Revenue</h3>
+                    <p className="text-white/60 text-lg md:text-2xl font-light max-w-xl italic">+240% Growth in 90 Days // Strategic Domination</p>
+                </div>
+            </div>
+        </TiltCard>
+      </section>
 
-           <div className="grid grid-cols-2 gap-6">
-              <div className="glass-card p-8 text-center space-y-4">
-                 <div className="text-5xl font-black text-primary">3.5x</div>
-                 <div className="text-[10px] font-black uppercase tracking-widest opacity-40">ROI Increase</div>
-              </div>
-              <div className="glass-card p-8 text-center space-y-4">
-                 <div className="text-5xl font-black text-accent">240%</div>
-                 <div className="text-[10px] font-black uppercase tracking-widest opacity-40">Lead Growth</div>
-              </div>
-              <div className="col-span-2 glass-card p-10 flex flex-col items-center justify-center border-dashed border-primary/40 bg-primary/5">
-                 <Users className="w-12 h-12 text-primary mb-4" />
-                 <h4 className="text-2xl font-black uppercase">Join the Elite 1%</h4>
-                 <p className="text-text-secondary font-medium mt-2">Only 2 spots remaining for Q3.</p>
-              </div>
-           </div>
+      {/* Voices Section */}
+      <section className="py-20 flex flex-col md:flex-row gap-20">
+        <div className="md:w-1/2 space-y-12">
+            <h4 className="text-[10px] mono-accent text-accent">Transmission Received</h4>
+            <div className="glass-card p-12 md:p-16 border-white/10 relative">
+                <Quote className="w-12 h-12 text-primary opacity-20 mb-8" />
+                <p className="text-2xl md:text-4xl font-light italic text-text-secondary leading-relaxed">
+                  "NexInk didn't just rebuild our digital interface; they redefined our market position. The precision is unmatched."
+                </p>
+                <div className="flex items-center gap-6 pt-12">
+                    <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black">C</div>
+                    <div>
+                        <div className="text-lg font-light tracking-widest uppercase">Calvince Okomo</div>
+                        <div className="text-[10px] mono-accent opacity-30 mt-1">Sales Lead // Hunters Paradise</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div className="md:w-1/2 grid grid-cols-2 gap-8">
+            {[
+                { val: "3.5x", label: "ROI Baseline" },
+                { val: "240%", label: "Direct Leads" },
+                { val: "10x", label: "Brand Equity" },
+                { val: "0.2s", label: "Market Reflex" }
+            ].map((stat, i) => (
+                <div key={i} className="glass-card p-10 flex flex-col items-center justify-center text-center space-y-4 hover:border-primary/20 transition-colors">
+                    <div className="text-5xl font-light text-gradient">{stat.val}</div>
+                    <div className="text-[10px] mono-accent opacity-30">{stat.label}</div>
+                </div>
+            ))}
+            <div className="col-span-2 glass p-10 flex flex-col items-center justify-center border-white/5 bg-primary/5">
+                <Users className="w-8 h-8 text-primary mb-4" />
+                <h4 className="text-xl font-light uppercase tracking-widest">Network Expansion</h4>
+                <p className="text-text-secondary font-light text-xs mt-2 opacity-60">System status: Limited availability for Q3 protocols.</p>
+            </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="contact" className="pb-24">
-        <div className="glass-card bg-primary text-white p-12 md:p-32 rounded-[4rem] text-center space-y-12 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-1000" />
-          
-          <h2 className="text-6xl md:text-[10rem] font-display uppercase leading-[0.8] tracking-tighter relative z-10">Start Your<br /><span className="text-white/50 italic font-serif font-light">Dominance.</span></h2>
-          <p className="text-xl md:text-3xl font-medium max-w-2xl mx-auto opacity-90 relative z-10">
-            Book a 30-minute growth intel session. No fluff. Full transparency.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6 relative z-10">
-             <button className="px-12 py-6 bg-white text-primary rounded-2xl font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-3xl flex items-center justify-center gap-3">
-               Apply Now <ArrowRight className="w-6 h-6" />
-             </button>
-             <button className="px-12 py-6 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl font-black text-xl hover:bg-white/20 transition-all">
-               View Pipeline
-             </button>
-          </div>
+      {/* CTA Final */}
+      <section className="pb-48">
+        <div className="glass p-16 md:p-32 text-center space-y-16 relative overflow-hidden border-white/10">
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary opacity-[0.05] blur-[150px] -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent opacity-[0.05] blur-[120px] translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="space-y-6 relative z-10">
+                <h2 className="text-6xl md:text-[8rem] font-light uppercase leading-none tracking-tighter">
+                   Initiate <br /><span className="text-gradient">Protocol.</span>
+                </h2>
+                <p className="text-xl md:text-3xl font-light text-text-secondary max-w-3xl mx-auto">
+                    Secure your market transformation intel session today. 
+                </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-8 relative z-10">
+                <MagneticButton className="px-16 py-8">
+                    Apply for Transform
+                </MagneticButton>
+                <MagneticButton className="px-16 py-8 !bg-transparent !shadow-none hover:!bg-white/5">
+                    Access Intelligence
+                </MagneticButton>
+            </div>
         </div>
       </section>
     </div>
